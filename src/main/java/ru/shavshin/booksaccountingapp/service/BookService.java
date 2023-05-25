@@ -1,6 +1,6 @@
 package ru.shavshin.booksaccountingapp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -14,14 +14,12 @@ import java.util.Optional;
 
 
 @Service
+@NoArgsConstructor
 public class BookService {
-    private final BookRepository bookRepository;
+    private BookRepository bookRepository;
 
-
-    @Autowired
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-
     }
 
     public List<BookEntity> findAllBooks(Boolean sortByYear) {

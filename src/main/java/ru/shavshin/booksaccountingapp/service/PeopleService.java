@@ -1,5 +1,7 @@
 package ru.shavshin.booksaccountingapp.service;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,12 @@ import java.util.Optional;
 
 
 @Service
+@NoArgsConstructor
 public class PeopleService {
+    private PeopleRepository peopleRepository;
 
-    private final PeopleRepository peopleRepository;
-
-    @Autowired
     public PeopleService(PeopleRepository peopleRepository) {
         this.peopleRepository = peopleRepository;
-
     }
 
     public List<PersonEntity> findAllPeople() {
