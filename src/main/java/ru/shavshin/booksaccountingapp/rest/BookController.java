@@ -1,6 +1,6 @@
 package ru.shavshin.booksaccountingapp.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,15 +16,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/books")
+@RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
     private final PeopleService peopleService;
-
-    @Autowired
-    public BookController(BookService bookService, PeopleService peopleService) {
-        this.bookService = bookService;
-        this.peopleService = peopleService;
-    }
 
     @GetMapping("/all")
     public String findAllBooks(
@@ -46,6 +41,7 @@ public class BookController {
 
     @GetMapping("/{id}")
     public String findBookById(@PathVariable("id") Integer id, Model model) {
+
         model.addAttribute("book", bookService.findBookById(id));
 
         PersonEntity bookOwner = bookService.getBookOwner(id);
@@ -70,15 +66,15 @@ public class BookController {
         if (bindingResult.hasErrors()) {
             return "books/new";
         }
-
         bookService.addBook(book);
         return "redirect:/books";
-
     }
 
     @GetMapping("/{id}/edit")
     public String editBook(Model model, @PathVariable("id") Integer id) {
+
         BookEntity book = bookService.findBookById(id);
+
         model.addAttribute("book", book);
         return "books/edit";
     }
@@ -93,25 +89,28 @@ public class BookController {
         if (bindingResult.hasErrors()) {
             return "books/edit";
         }
-
         bookService.updateBook(id, bookToUpdate);
         return "redirect:/books";
     }
 
     @DeleteMapping("/{id}")
     public String deleteBook(@PathVariable("id") Integer id) {
+
         bookService.deleteBook(id);
         return "redirect:/books";
     }
 
     @PatchMapping("/{id}/release")
     public String releaseBook(@PathVariable("id") Integer id) {
+
         bookService.releaseBook(id);
         return "redirect:/books/" + id;
     }
 
     @PatchMapping("/{id}/assign")
-    public String assignBook(@PathVariable("id") Integer id, @ModelAttribute("person") PersonEntity selectedPerson) {
+    public String assignBook(@PathVariable("id") Integer id,
+                             @ModelAttribute("person") PersonEntity selectedPerson
+    ) {
         bookService.assignBook(id, selectedPerson);
         return "redirect:/books/" + id;
     }
@@ -122,10 +121,12 @@ public class BookController {
     }
 
     @PostMapping("/search")
-    public String makeSearch(Model model, @RequestParam(value = "query") String query) {
+    public String makeSearch(Model model,
+                             @RequestParam(value = "query") String query
+    ) {
         List<BookEntity> booksByTitle = bookService.searchByTitle(query);
+
         model.addAttribute("books", booksByTitle);
         return "books/search";
     }
-
 }

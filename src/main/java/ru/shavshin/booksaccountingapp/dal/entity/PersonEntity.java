@@ -25,16 +25,17 @@ public class PersonEntity {
     @Size(min = 2, max = 100, message = "Имя должно иметь от 2 до 100 символов!")
     @Column(name = "full_name")
     private String fullName;
+
     @Min(value = 1900, message = "Год не может быть меньше 1900!")
     @Column(name = "year_of_birth")
     private Integer yearOfBirth;
+
+    @OneToMany(mappedBy = "owner")
+    private List<BookEntity> bookList;
 
 
     public PersonEntity(String fullName, Integer yearOfBirth) {
         this.fullName = fullName;
         this.yearOfBirth = yearOfBirth;
     }
-
-    @OneToMany(mappedBy = "owner")
-    private List<BookEntity> bookList;
 }

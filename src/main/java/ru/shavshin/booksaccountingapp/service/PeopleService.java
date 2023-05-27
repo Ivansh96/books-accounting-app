@@ -17,13 +17,9 @@ import java.util.Optional;
 
 
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class PeopleService {
-    private PeopleRepository peopleRepository;
-
-    public PeopleService(PeopleRepository peopleRepository) {
-        this.peopleRepository = peopleRepository;
-    }
+    private final PeopleRepository peopleRepository;
 
     public List<PersonEntity> findAllPeople() {
         return peopleRepository.findAll();
@@ -34,17 +30,14 @@ public class PeopleService {
         return foundPerson.orElse(null);
     }
 
-
     public void addPerson(PersonEntity person) {
         peopleRepository.save(person);
     }
-
 
     public void updatePerson(Integer id, PersonEntity updatedPerson) {
         updatedPerson.setId(id);
         peopleRepository.save(updatedPerson);
     }
-
 
     public void deletePerson(Integer id) {
         peopleRepository.deleteById(id);
@@ -68,8 +61,5 @@ public class PeopleService {
         } else {
             return Collections.emptyList();
         }
-
     }
-
-
 }

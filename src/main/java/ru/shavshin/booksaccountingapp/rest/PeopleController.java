@@ -1,6 +1,6 @@
 package ru.shavshin.booksaccountingapp.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,34 +16,31 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/people")
+@RequiredArgsConstructor
 public class PeopleController {
 
     private final PersonValidator personValidator;
-
     private final PeopleService peopleService;
-
-
-    @Autowired
-    public PeopleController(PersonValidator personValidator, PeopleService peopleService) {
-        this.personValidator = personValidator;
-        this.peopleService = peopleService;
-    }
-
 
     @GetMapping("/all")
     public String findAllPeople(Model model) {
-        model.addAttribute("people", peopleService.findAllPeople());
+
+        List<PersonEntity> people = peopleService.findAllPeople();
+
+        model.addAttribute("people", people);
         return "people/index";
     }
 
     @GetMapping("/{id}")
     public String findPersonById(@PathVariable("id") Integer id, Model model) {
+
         PersonEntity person = peopleService.findPersonById(id);
         model.addAttribute("person", person);
-        List<BookEntity> books = peopleService.getBookByPersonId(id);
-        model.addAttribute("books", peopleService.getBookByPersonId(id));
-        return "people/show";
 
+        List<BookEntity> books = peopleService.getBookByPersonId(id);
+        model.addAttribute("books", books);
+
+        return "people/show";
     }
 
 
@@ -53,13 +50,14 @@ public class PeopleController {
     }
 
     @PostMapping("/add")
-    public String addPerson(@ModelAttribute("person") @Valid PersonEntity person, BindingResult bindingResult) {
+    public String addPerson(@ModelAttribute("person") @Valid PersonEntity person,
+                            BindingResult bindingResult
+    ) {
         personValidator.validate(person, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
-
         peopleService.addPerson(person);
         return "redirect:/people";
     }
@@ -67,7 +65,10 @@ public class PeopleController {
 
     @GetMapping("/{id}/edit")
     public String editPerson(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("person", peopleService.findPersonById(id));
+
+        PersonEntity person = peopleService.findPersonById(id);
+
+        model.addAttribute("person", person);
         return "people/edit";
     }
 
@@ -87,8 +88,8 @@ public class PeopleController {
 
     @DeleteMapping("/{id}")
     public String deletePerson(@PathVariable("id") Integer id) {
+
         peopleService.deletePerson(id);
         return "redirect:/people";
     }
-
 }

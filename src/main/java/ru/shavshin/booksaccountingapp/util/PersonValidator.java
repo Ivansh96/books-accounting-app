@@ -1,5 +1,6 @@
 package ru.shavshin.booksaccountingapp.util;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -8,12 +9,9 @@ import ru.shavshin.booksaccountingapp.service.PeopleService;
 
 
 @Component
+@RequiredArgsConstructor
 public class PersonValidator implements Validator {
     private final PeopleService peopleService;
-
-    public PersonValidator(PeopleService peopleService) {
-        this.peopleService = peopleService;
-    }
 
     @Override
     public boolean supports(Class<?> aClass) {

@@ -1,6 +1,7 @@
 package ru.shavshin.booksaccountingapp.service;
 
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -14,19 +15,16 @@ import java.util.Optional;
 
 
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class BookService {
-    private BookRepository bookRepository;
-
-    public BookService(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
+    private final BookRepository bookRepository;
 
     public List<BookEntity> findAllBooks(Boolean sortByYear) {
-        if (sortByYear)
+        if (sortByYear) {
             return bookRepository.findAll(Sort.by("year"));
-        else
+        } else {
             return bookRepository.findAll();
+        }
     }
 
     public List<BookEntity> findBookWithPagination(
@@ -34,10 +32,11 @@ public class BookService {
             Integer booksPerPage,
             Boolean sortByYear
     ) {
-        if (sortByYear)
+        if (sortByYear) {
             return bookRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("year"))).getContent();
-        else
+        } else {
             return bookRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
+        }
     }
 
     public BookEntity findBookById(Integer id) {
@@ -49,11 +48,9 @@ public class BookService {
         return bookRepository.findByTitleStartingWith(title);
     }
 
-
     public void addBook(BookEntity book) {
         bookRepository.save(book);
     }
-
 
     public void updateBook(Integer id, BookEntity book) {
         book.setId(id);
@@ -61,24 +58,20 @@ public class BookService {
         bookRepository.save(book);
     }
 
-
     public void deleteBook(Integer id) {
         bookRepository.deleteById(id);
     }
 
     public PersonEntity getBookOwner(Integer id) {
-        return bookRepository.findById(id).map(BookEntity:: getOwner).orElse(null);
+        return bookRepository.findById(id).map(BookEntity::getOwner).orElse(null);
     }
-
 
     public void releaseBook(Integer id) {
-       bookRepository.findById(id).ifPresent(book -> {
-           book.setOwner(null);
-           book.setTakenAt(null);
-       });
-
+        bookRepository.findById(id).ifPresent(book -> {
+            book.setOwner(null);
+            book.setTakenAt(null);
+        });
     }
-
 
     public void assignBook(Integer id, PersonEntity selectedPerson) {
         bookRepository.findById(id).ifPresent(book -> {
@@ -86,6 +79,4 @@ public class BookService {
             book.setTakenAt(new Date());
         });
     }
-
-
 }
